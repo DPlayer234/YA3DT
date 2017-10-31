@@ -1,10 +1,17 @@
 fileFormatVersion: 2
 guid: 2c68ee95fd2fbd34faa7bdae132e2d59
-timeCreated: 1508619493
+timeCreated: 1508868988
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - blockMaterial: {instanceID: 0}
+  - blockPrefab: {instanceID: 0}
+  - collideSound: {fileID: 8300000, guid: 3dc664256b231994bab254ecd41da150, type: 3}
+  - landSound: {fileID: 8300000, guid: a50d371fec325a54a9f5b1e3df8120cf, type: 3}
+  - rotateSound: {fileID: 8300000, guid: 098850d734a834f4f8152b8498e9e5c2, type: 3}
+  - playField: {instanceID: 0}
+  - gameStateHandler: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

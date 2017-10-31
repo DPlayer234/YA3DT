@@ -51,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c68ee95fd2fbd34faa7bdae132e2d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 0
   blockPositions:
   - {x: 0, y: 0, z: 0}
   - {x: -1, y: 1, z: 0}
@@ -60,6 +59,9 @@ MonoBehaviour:
   blockMaterial: {fileID: 2100000, guid: 62b5bd37e44ea90469cff37d3097ea7d, type: 2}
   blockPrefab: {fileID: 114013382963955440, guid: 25361aac793ed0b4ebc3b13051c41ec2,
     type: 2}
+  collideSound: {fileID: 8300000, guid: 3dc664256b231994bab254ecd41da150, type: 3}
+  landSound: {fileID: 8300000, guid: a50d371fec325a54a9f5b1e3df8120cf, type: 3}
+  rotateSound: {fileID: 8300000, guid: 098850d734a834f4f8152b8498e9e5c2, type: 3}
+  mouseSensitivity: 0
   playField: {fileID: 0}
   gameStateHandler: {fileID: 0}
-  active: 0

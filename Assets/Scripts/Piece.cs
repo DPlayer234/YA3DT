@@ -16,8 +16,8 @@ namespace YA3DT
         /// Must be in the range of 0-1! (0=instant; 1=no movement)
         private const float MOVEMENT_AND_ROTATION_SPEED_BASE = 0.2f;
 
-        /// <summary> Affects how much the mouse must be moved to move a piece </summary>
-        public float mouseSensitivity;
+        /// <summary> Volume multiplier for sounds played </summary>
+		private const float SOUND_VOLUME = 1.0f;
 
         /// <summary> Blocks coordinates </summary>
         public Vector3[] blockPositions;
@@ -27,6 +27,18 @@ namespace YA3DT
 
         /// <summary> Prefab for a single block </summary>
         public Block blockPrefab;
+
+        /// <summary> Sound played when colliding with walls </summary>
+        public AudioClip collideSound;
+
+        /// <summary> Sound played when landing on the ground </summary>
+        public AudioClip landSound;
+
+        /// <summary> Sound played when rotating </summary>
+        public AudioClip rotateSound;
+
+        /// <summary> Affects how much the mouse must be moved to move a piece </summary>
+        public float mouseSensitivity;
 
         /// <summary> The active play field </summary>
         public PlayField playField;
@@ -43,8 +55,11 @@ namespace YA3DT
         /// <summary> All blocks that this piece is made of </summary>
         private Block[] parts;
 
+        /// <summary> This object's audio source </summary>
+        private AudioSource audioSource;
+
         /// <summary> Whether this piece is currently active </summary>
-        public bool active;
+        private bool active;
 
         /// <summary> Object-based timer for handling step delays </summary>
         private float localTimer;
@@ -91,7 +106,7 @@ namespace YA3DT
             {
                 Block block = Instantiate(blockPrefab, transform);
                 block.gameObject.GetComponent<MeshRenderer>().material = blockMaterial;
-                
+
                 block.transform.localPosition = blockPositions[i];
 
                 if (blockPositions[i].y > highestPartYCoordinate)
@@ -157,7 +172,7 @@ namespace YA3DT
 
                 // Rotate
                 if (Input.GetKeyDown(KeyCode.UpArrow) || mouseDistanceMoved.y > mouseSensitivity)
-                { 
+                {
                     RotateAndCollide(PieceRotationHelper.Direction.XBackwards);
                     mouseDistanceMoved.y %= mouseSensitivity;
                 }
@@ -220,6 +235,15 @@ namespace YA3DT
         }
 
         /// <summary>
+        /// Sets the clip of the audio source and plays it.
+        /// </summary>
+        /// <param name="clip">The clip to play</param>
+        private void PlaySound(AudioClip clip)
+        {
+            AudioSource.PlayClipAtPoint(clip, transform.position, SOUND_VOLUME);
+        }
+
+        /// <summary>
         /// Checks whether a rotation in that direction is possible and rotates them if it is.
         /// </summary>
         /// <param name="direction">The direction to attempt to rotate all pieces in.</param>
@@ -253,10 +277,14 @@ namespace YA3DT
                     rotationOffset = rotateBy;
                 }
 
+                PlaySound(rotateSound);
+
                 return false;
             }
             else
             {
+                PlaySound(collideSound);
+
                 return true;
             }
         }
@@ -282,6 +310,8 @@ namespace YA3DT
             }
             else
             {
+                PlaySound(collideSound);
+
                 return true;
             }
         }
@@ -332,8 +362,10 @@ namespace YA3DT
         /// </summary>
         private void OnLanding()
         {
+            PlaySound(landSound);
+
             UpdateTransformInstantly();
-            
+
             playField.AddBlocks(parts);
 
             gameStateHandler.Score += (int)(gameStateHandler.scoreOnPiecePlacedFactor * gameStateHandler.Difficulty);
