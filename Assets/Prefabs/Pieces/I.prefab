@@ -56,12 +56,9 @@ MonoBehaviour:
   - {x: 1, y: 0, z: 0}
   - {x: 2, y: 0, z: 0}
   - {x: -1, y: 0, z: 0}
-  blockMaterial: {fileID: 2100000, guid: a4ca2a71f70a01843b3c90baf27577f2, type: 2}
+  blockMaterial: {fileID: 2100000, guid: 8dd672e710a228e4297aa712124a4cb6, type: 2}
   blockPrefab: {fileID: 114013382963955440, guid: 25361aac793ed0b4ebc3b13051c41ec2,
     type: 2}
   collideSound: {fileID: 8300000, guid: 3dc664256b231994bab254ecd41da150, type: 3}
   landSound: {fileID: 8300000, guid: a50d371fec325a54a9f5b1e3df8120cf, type: 3}
   rotateSound: {fileID: 8300000, guid: 098850d734a834f4f8152b8498e9e5c2, type: 3}
-  mouseSensitivity: 0
-  playField: {fileID: 0}
-  gameStateHandler: {fileID: 0}

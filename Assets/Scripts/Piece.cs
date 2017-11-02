@@ -5,7 +5,7 @@ using UnityEngine;
 namespace YA3DT
 {
     /// <summary>
-    /// Represents a game Piece
+    ///     Represents a game Piece
     /// </summary>
     public class Piece : MonoBehaviour
     {
@@ -37,15 +37,6 @@ namespace YA3DT
         /// <summary> Sound played when rotating </summary>
         public AudioClip rotateSound;
 
-        /// <summary> Affects how much the mouse must be moved to move a piece </summary>
-        public float mouseSensitivity;
-
-        /// <summary> The active play field </summary>
-        public PlayField playField;
-
-        /// <summary> The active game state handler </summary>
-        public GameStateHandler gameStateHandler;
-
         /// <summary> Where the object is considered to be </summary>
         private Vector3 realPosition;
 
@@ -67,6 +58,15 @@ namespace YA3DT
         /// <summary> Used internally to make sure movement by mouse isn't too rapid </summary>
         private Vector2 mouseDistanceMoved;
 
+        /// <summary> Affects how much the mouse must be moved to move a piece </summary>
+        public float MouseSensitivity { get; set; }
+
+        /// <summary> The active play field </summary>
+        public PlayField PlayField { get; set; }
+
+        /// <summary> The active game state handler </summary>
+        public GameStateHandler GameStateHandler { get; set; }
+
         /// <summary> Amount of parts a piece has </summary>
         private int PartCount { get; set; }
 
@@ -87,16 +87,16 @@ namespace YA3DT
         }
 
         /// <summary> Multiplier for movement speed </summary>
-        private float MovementDelay { get { return (float)((Input.GetKey(KeyCode.Space) ? 0.1f : 1.0f) / gameStateHandler.Difficulty); } }
+        private float MovementDelay { get { return (float)((Input.GetKey(KeyCode.Space) ? 0.1f : 1.0f) / GameStateHandler.Difficulty); } }
 
         /// <summary>
-        /// Called by Unity to initialize the Piece
+        ///     Called by Unity to initialize the Piece
         /// </summary>
         void Start()
         {
             PartCount = blockPositions.Length;
 
-            realPosition = new Vector3(playField.width / 2, playField.height, playField.depth / 2);
+            realPosition = new Vector3(PlayField.width / 2, PlayField.height, PlayField.depth / 2);
             rotationOffset = Vector3.zero;
 
             parts = new Block[PartCount];
@@ -105,7 +105,7 @@ namespace YA3DT
             for (int i = 0; i < PartCount; i++)
             {
                 Block block = Instantiate(blockPrefab, transform);
-                block.gameObject.GetComponent<MeshRenderer>().material = blockMaterial;
+                block.GetComponent<MeshRenderer>().material = blockMaterial;
 
                 block.transform.localPosition = blockPositions[i];
 
@@ -125,7 +125,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Called by Unity every frame to update the Piece
+        ///     Called by Unity every frame to update the Piece
         /// </summary>
         void Update()
         {
@@ -171,26 +171,26 @@ namespace YA3DT
                 }
 
                 // Rotate
-                if (Input.GetKeyDown(KeyCode.UpArrow) || mouseDistanceMoved.y > mouseSensitivity)
+                if (Input.GetKeyDown(KeyCode.UpArrow) || mouseDistanceMoved.y > MouseSensitivity)
                 {
                     RotateAndCollide(PieceRotationHelper.Direction.XBackwards);
-                    mouseDistanceMoved.y %= mouseSensitivity;
+                    mouseDistanceMoved.y %= MouseSensitivity;
                 }
-                else if (Input.GetKeyDown(KeyCode.DownArrow) || mouseDistanceMoved.y < -mouseSensitivity)
+                else if (Input.GetKeyDown(KeyCode.DownArrow) || mouseDistanceMoved.y < -MouseSensitivity)
                 {
                     RotateAndCollide(PieceRotationHelper.Direction.XForwards);
-                    mouseDistanceMoved.y %= -mouseSensitivity;
+                    mouseDistanceMoved.y %= -MouseSensitivity;
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || mouseDistanceMoved.x < -mouseSensitivity)
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || mouseDistanceMoved.x < -MouseSensitivity)
                 {
                     RotateAndCollide(PieceRotationHelper.Direction.YLeft);
-                    mouseDistanceMoved.x %= mouseSensitivity;
+                    mouseDistanceMoved.x %= MouseSensitivity;
                 }
-                else if (Input.GetKeyDown(KeyCode.RightArrow) || mouseDistanceMoved.x > mouseSensitivity)
+                else if (Input.GetKeyDown(KeyCode.RightArrow) || mouseDistanceMoved.x > MouseSensitivity)
                 {
                     RotateAndCollide(PieceRotationHelper.Direction.YRight);
-                    mouseDistanceMoved.x %= -mouseSensitivity;
+                    mouseDistanceMoved.x %= -MouseSensitivity;
                 }
 
                 if (Input.GetKeyDown(KeyCode.Q))
@@ -207,17 +207,17 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Checks whether the given position overlaps any fixed block.
+        ///     Checks whether the given position overlaps any fixed block.
         /// </summary>
         /// <param name="atPosition">The position to check</param>
         /// <returns>Whether it collides/overlaps anything</returns>
         private bool CheckCollision(Vector3 atPosition)
         {
-            return playField.HasBlockAt(atPosition);
+            return PlayField.HasBlockAt(atPosition);
         }
 
         /// <summary>
-        /// Check whether any of the given positions overlaps any fixed block.
+        ///     Check whether any of the given positions overlaps any fixed block.
         /// </summary>
         /// <param name="positions">The positions to check</param>
         /// <returns>Whether it collides/overlaps anything</returns>
@@ -235,7 +235,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Sets the clip of the audio source and plays it.
+        ///     Sets the clip of the audio source and plays it.
         /// </summary>
         /// <param name="clip">The clip to play</param>
         private void PlaySound(AudioClip clip)
@@ -244,7 +244,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Checks whether a rotation in that direction is possible and rotates them if it is.
+        ///     Checks whether a rotation in that direction is possible and rotates them if it is.
         /// </summary>
         /// <param name="direction">The direction to attempt to rotate all pieces in.</param>
         /// <returns>Whether it has collided with something</returns>
@@ -290,7 +290,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Checks whether moving by the given vector is possible and moves if it is.
+        ///     Checks whether moving by the given vector is possible and moves if it is.
         /// </summary>
         /// <param name="offset">The vector to add to the current position</param>
         /// <returns>Whether it has collided with something</returns>
@@ -317,7 +317,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Checks whether the piece currenly overlaps any collision.
+        ///     Checks whether the piece currenly overlaps any collision.
         /// </summary>
         /// <returns>Returns true if it overlaps anything, false otherwise</returns>
         public bool CheckCurrentCollision()
@@ -333,7 +333,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Updates the transform's position and rotation smoothly.
+        ///     Updates the transform's position and rotation smoothly.
         /// </summary>
         private void UpdateTransform()
         {
@@ -349,7 +349,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Instantly updates the transform, skipping any animations.
+        ///     Instantly updates the transform, skipping any animations.
         /// </summary>
         private void UpdateTransformInstantly()
         {
@@ -358,7 +358,7 @@ namespace YA3DT
         }
 
         /// <summary>
-        /// Called when the object hits the floor.
+        ///     Called when the object hits the floor.
         /// </summary>
         private void OnLanding()
         {
@@ -366,13 +366,13 @@ namespace YA3DT
 
             UpdateTransformInstantly();
 
-            playField.AddBlocks(parts);
+            PlayField.AddBlocks(parts);
 
-            gameStateHandler.Score += (int)(gameStateHandler.scoreOnPiecePlacedFactor * gameStateHandler.Difficulty);
+            GameStateHandler.Score += (ulong)(GameStateHandler.scoreOnPiecePlacedFactor * GameStateHandler.Difficulty);
 
-            gameStateHandler.Difficulty += gameStateHandler.difficultyIncrementOnPiecePlaced;
+            GameStateHandler.Difficulty += GameStateHandler.difficultyIncrementOnPiecePlaced;
 
-            gameStateHandler.GoToNextPiece();
+            GameStateHandler.GoToNextPiece();
         }
     }
 }

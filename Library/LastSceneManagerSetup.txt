@@ -2,6 +2,9 @@ sceneSetups:
 - path: Assets/Scenes/Main.unity
   isLoaded: 0
   isActive: 0
-- path: Assets/Menu/Menu.unity
+- path: Assets/Scenes/Menu.unity
   isLoaded: 1
   isActive: 1
+- path: Assets/Scenes/HighScores.unity
+  isLoaded: 0
+  isActive: 0
