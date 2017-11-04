@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     ///     Represents a block of a Piece

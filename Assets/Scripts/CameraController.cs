@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
-    /// Controls the camera
+    ///     Controls the camera
     /// </summary>
     public class CameraController : MonoBehaviour
     {
@@ -32,39 +32,49 @@ namespace YA3DT
         /// <summary> The camera object attached to this GameObject </summary>
         new private Camera camera;
 
+        /// <summary> The difficulty last frame; used to make sure not to change the background color every frame </summary>
+        private double lastDifficulty;
+
         /// <summary>
-        /// Called by Unity to initialize the CameraController
+        ///     Called by Unity to initialize the CameraController
         /// </summary>
         void Start()
         {
             Cursor.lockState = CursorLockMode.None;
 
             camera = GetComponent<Camera>();
+
+            lastDifficulty = -1;
         }
 
         /// <summary>
-        /// Sets the background color based on the current difficulty.
+        ///     Sets the background color based on the current difficulty.
         /// </summary>
         private void SetBackgroundColorBasedOnDifficulty()
         {
-            float h = BACKGROUND_COLOR_HIGH_DIFFICULTY_H -
-                (BACKGROUND_COLOR_HIGH_DIFFICULTY_H - BACKGROUND_COLOR_LOW_DIFFICULTY_H) *
-                Mathf.Pow(
-                    BACKGROUND_COLOR_DIFFICULTY_FADE_RELATION,
-                    (float)(gameStateHandler.Difficulty - gameStateHandler.initialDifficulty));
+            if (lastDifficulty != gameStateHandler.Difficulty)
+            {
+                lastDifficulty = gameStateHandler.Difficulty;
 
-            camera.backgroundColor = Color.HSVToRGB(h, BACKGROUND_COLOR_S, BACKGROUND_COLOR_V);
+                float h = BACKGROUND_COLOR_HIGH_DIFFICULTY_H -
+                    (BACKGROUND_COLOR_HIGH_DIFFICULTY_H - BACKGROUND_COLOR_LOW_DIFFICULTY_H) *
+                    Mathf.Pow(
+                        BACKGROUND_COLOR_DIFFICULTY_FADE_RELATION,
+                        (float)(gameStateHandler.Difficulty - GameStateHandler.initialDifficulty));
+
+                camera.backgroundColor = Color.HSVToRGB(h, BACKGROUND_COLOR_S, BACKGROUND_COLOR_V);
+            }
         }
 
         /// <summary>
-        /// Called by Unity every frame to update the CameraController
+        ///     Called by Unity every frame to update the CameraController
         /// </summary>
         void Update()
         {
             SetBackgroundColorBasedOnDifficulty();
 
             CursorLockMode thisLockMode;
-            if ((Input.GetMouseButton(0) && !gameStateHandler.GameOver) || Input.GetMouseButton(1))
+            if (!gameStateHandler.Paused && ((Input.GetMouseButton(0) && !gameStateHandler.GameOver) || Input.GetMouseButton(1)))
             {
                 thisLockMode = CursorLockMode.Locked;
             }
@@ -78,24 +88,27 @@ namespace YA3DT
                 Cursor.lockState = thisLockMode;
             }
 
-            // Move camera
-            if (Input.GetMouseButton(1))
+            if (!gameStateHandler.Paused)
             {
-                Quaternion rotation = transform.parent.rotation;
-                Vector3 eulerAngles = rotation.eulerAngles;
+                // Move camera
+                if (Input.GetMouseButton(1))
+                {
+                    Quaternion rotation = transform.parent.rotation;
+                    Vector3 eulerAngles = rotation.eulerAngles;
 
-                eulerAngles.y += Input.GetAxis("Mouse X");
-                if (eulerAngles.y > 180f) eulerAngles.y -= 360f;
-                if (eulerAngles.y > 45f) eulerAngles.y = 45f;
-                else if (eulerAngles.y < -45f) eulerAngles.y = -45f;
+                    eulerAngles.y += Input.GetAxis("Mouse X");
+                    if (eulerAngles.y > 180f) eulerAngles.y -= 360f;
+                    if (eulerAngles.y > 45f) eulerAngles.y = 45f;
+                    else if (eulerAngles.y < -45f) eulerAngles.y = -45f;
 
-                eulerAngles.x += Input.GetAxis("Mouse Y");
-                if (eulerAngles.x > 180f) eulerAngles.x -= 360f;
-                if (eulerAngles.x > 45f) eulerAngles.x = 45f;
-                else if (eulerAngles.x < -45f) eulerAngles.x = -45f;
+                    eulerAngles.x += Input.GetAxis("Mouse Y");
+                    if (eulerAngles.x > 180f) eulerAngles.x -= 360f;
+                    if (eulerAngles.x > 45f) eulerAngles.x = 45f;
+                    else if (eulerAngles.x < -45f) eulerAngles.x = -45f;
 
-                rotation.eulerAngles = eulerAngles;
-                transform.parent.rotation = rotation;
+                    rotation.eulerAngles = eulerAngles;
+                    transform.parent.rotation = rotation;
+                }
             }
         }
     }

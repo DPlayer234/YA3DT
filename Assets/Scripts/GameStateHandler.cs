@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     ///     An Event to be called on a Game Over
@@ -16,6 +16,12 @@ namespace YA3DT
     /// </summary>
     public class GameStateHandler : MonoBehaviour
     {
+        /// <summary> The starting difficulty </summary>
+        static public double initialDifficulty = 3.0;
+
+        /// <summary> The current pause menu handler </summary>
+        public Menu.PauseMenuHandler menuHandler;
+
         /// <summary> An array of prefabs to use to create a new piece </summary>
         public Piece[] piecePrefabs;
 
@@ -43,9 +49,6 @@ namespace YA3DT
         /// <summary> The position of the next piece in relation to this. </summary>
         public Vector3 nextPieceLocalPosition;
 
-        /// <summary> The starting difficulty </summary>
-        public double initialDifficulty = 1.0;
-
         /// <summary> How much the difficulty increases for every plane that is cleared </summary>
         public double difficultyIncrementOnPlaneClear = 0.25;
 
@@ -64,11 +67,14 @@ namespace YA3DT
         /// <summary> RNG for picking the pieces </summary>
         private System.Random random;
 
-        /// <summary> The current score; use the field <see cref="Score"/> for access </summary>
+        /// <summary> The current score; use the property <see cref="Score"/> for access </summary>
         private ulong score;
 
-        /// <summary> The current game difficulty; use the field <see cref="Difficulty"/> for access </summary>
+        /// <summary> The current game difficulty; use the property <see cref="Difficulty"/> for access </summary>
         private double difficulty;
+
+        /// <summary> Whether the game is currently paused; use the property <see cref="Paused"/> for access </summary>
+        private bool paused;
 
         /// <summary> The currently active and controlled piece </summary>
         public Piece ActivePiece { get; private set; }
@@ -89,7 +95,8 @@ namespace YA3DT
 
         /// <summary>
         ///     The current score.
-        /// Setting it also updates the attached score display. </summary>
+        ///     Setting it also updates the attached score display.
+        /// </summary>
         public ulong Score
         {
             get { return score; }
@@ -119,9 +126,33 @@ namespace YA3DT
         }
 
         /// <summary>
+        ///     Whether the game is currently paused.
+        ///     Also updates the time scale.
+        /// </summary>
+        public bool Paused
+        {
+            get
+            {
+                return paused;
+            }
+            set
+            {
+                if (value)
+                {
+                    Time.timeScale = 0.05f;
+                }
+                else
+                {
+                    Time.timeScale = 1f;
+                }
+                paused = value;
+            }
+        }
+
+        /// <summary>
         ///     Called by Unity to initialize the GameStateHandler
         /// </summary>
-        void Start()
+        private void Start()
         {
             random = new System.Random();
 
@@ -137,6 +168,28 @@ namespace YA3DT
             PlayField.GameStateHandler = this;
 
             NextPiece = SetupNewPiece();
+
+            Paused = false;
+        }
+
+        /// <summary>
+        ///     Called by Unity every frame to update the GameStateHandler
+        /// </summary>
+        private void Update()
+        {
+            if (!GameOver)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    Paused = !Paused;
+                    menuHandler.SetPauseMenuOpened(Paused);
+                }
+            }
+            else if (Paused)
+            {
+                Paused = false;
+                menuHandler.SetPauseMenuOpened(false);
+            }
         }
 
         /// <summary>

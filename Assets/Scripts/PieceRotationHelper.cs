@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     /// Provides variables and functions to rotate pieces.

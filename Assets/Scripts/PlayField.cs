@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     ///     A play field with fixed blocks
@@ -43,7 +43,7 @@ namespace YA3DT
         /// <summary>
         ///     Called by Unity to initialize the PlayField
         /// </summary>
-        void Start()
+        private void Start()
         {
             // Make sure the dimensions are valid
             try
@@ -135,7 +135,7 @@ namespace YA3DT
         /// <summary>
         ///     Called by Unity to update the PlayField
         /// </summary>
-        void Update()
+        private void Update()
         {
             Block block;
             for (int i = brokenBlocks.Count - 1; i >= 0; i--)

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     ///     Stores and handles High Scores
@@ -58,7 +58,7 @@ namespace YA3DT
         /// <summary>
         ///     Called by Unity to initialize the HighScoreHandler
         /// </summary>
-        void Start()
+        private void Start()
         {
             // Check inspector values
             try

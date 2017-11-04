@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     // Partial component to have HighScore be a part of HighScoreHandler
     public partial class HighScoreHandler
@@ -72,7 +72,6 @@ namespace YA3DT
                 {
                     // Try to parse the score into a number (ulong) value
                     bool success = ulong.TryParse(scoreMatch.Value, out score);
-                    UnityEngine.Debug.Log(saveString + ", " + success.ToString());
 
                     if (success)
                     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace YA3DT
+namespace SAE.YA3DT
 {
     /// <summary>
     ///     Represents a game Piece
@@ -92,7 +92,7 @@ namespace YA3DT
         /// <summary>
         ///     Called by Unity to initialize the Piece
         /// </summary>
-        void Start()
+        private void Start()
         {
             PartCount = blockPositions.Length;
 
@@ -127,9 +127,9 @@ namespace YA3DT
         /// <summary>
         ///     Called by Unity every frame to update the Piece
         /// </summary>
-        void Update()
+        private void Update()
         {
-            if (Active)
+            if (Active && !GameStateHandler.Paused)
             {
                 float delay = MovementDelay;
 
