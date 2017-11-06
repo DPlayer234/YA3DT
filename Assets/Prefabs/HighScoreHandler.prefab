@@ -62,6 +62,6 @@ MonoBehaviour:
   - '#81ED5A'
   defaultDisplayColor: '#72F0B1'
   displayedScoreCount: 20
-  defaultScoreAsset: {fileID: 4900000, guid: 560a5b1be91b7b244b5a58037379783b, type: 3}
+  defaultScoreAsset: {fileID: 4900000, guid: 78a35dfe566317f43b20a6b283414a8b, type: 3}
   highScoreSaveDirectory: YetAnother3DTetromino
   highScoreSaveFile: highscores.txt
