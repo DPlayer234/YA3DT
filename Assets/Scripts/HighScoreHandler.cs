@@ -18,6 +18,9 @@ namespace SAE.YA3DT
     /// </summary>
     public partial class HighScoreHandler : MonoBehaviour
     {
+        /// <summary> The position of the last high score obtained </summary>
+        public static int lastHighScorePosition = -1;
+
         /// <summary> The active game state handler </summary>
         public GameStateHandler gameStateHandler;
 
@@ -35,6 +38,9 @@ namespace SAE.YA3DT
 
         /// <summary> Colors to be used for the top scores </summary>
         public string[] displayColors;
+
+        /// <summary> Color to use for the newly obtained high score </summary>
+        public string newScoreDislayColor;
 
         /// <summary> Color to use for all scores beyond those </summary>
         public string defaultDisplayColor;
@@ -222,16 +228,34 @@ namespace SAE.YA3DT
         /// </summary>
         /// <param name="user">Who obtained the score</param>
         /// <param name="score">What value does the score have</param>
+        /// <param name="newScore">Whether it's a new score</param>
         /// <param name="sort">Whether to immediately sort the HighScore table</param>
-        public void AddScore(string user, ulong score, bool sort = true)
+        public void AddScore(string user, ulong score, bool newScore = false, bool sort = true)
         {
-            HighScores.Add(new HighScore(
+            HighScore newHighScore = new HighScore(
                 user: user,
-                score: score));
+                score: score);
+            HighScores.Add(newHighScore);
 
             if (sort)
             {
                 SortHighScores();
+            }
+
+            if (newScore)
+            {
+                // Determine which position the new score had
+                lastHighScorePosition = -1;
+
+                for (int i = 0; i < HighScores.Count; i++)
+                {
+                    HighScore highScore = HighScores[i];
+                    if (highScore == newHighScore)
+                    {
+                        lastHighScorePosition = i;
+                        break;
+                    }
+                }
             }
         }
 
@@ -286,7 +310,10 @@ namespace SAE.YA3DT
                 foreach (HighScore highScore in HighScores)
                 {
                     userBuilder.Append("<color=");
-                    userBuilder.Append((displayColors.Length > position) ? displayColors[position] : defaultDisplayColor);
+                    userBuilder.Append(
+                        (position == lastHighScorePosition) ? newScoreDislayColor :
+                        (displayColors.Length > position) ? displayColors[position] :
+                        defaultDisplayColor);
                     userBuilder.Append(">");
                     userBuilder.Append(highScore.user);
                     userBuilder.Append(" </color>");
@@ -320,7 +347,8 @@ namespace SAE.YA3DT
         {
             AddScore(
                 !string.IsNullOrEmpty(nameField.text) ? nameField.text : "You",
-                gameStateHandler.Score);
+                gameStateHandler.Score,
+                newScore: true);
 
             SaveHighScores();
         }

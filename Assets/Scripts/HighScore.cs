@@ -51,6 +51,26 @@ namespace SAE.YA3DT
                 }
             }
 
+            // Equals and GetHashCode only defined to not cause a (Unity) warning
+            /// <summary>
+            ///     Returns whether this struct equals another object
+            /// </summary>
+            /// <param name="o">The object to check against</param>
+            /// <returns>Whether they are equal</returns>
+            public override bool Equals(object o)
+            {
+                return this.GetType() == o.GetType() && this == (HighScore)o;
+            }
+
+            /// <summary>
+            ///     Returns a hash code based on this object's data
+            /// </summary>
+            /// <returns>A hash code</returns>
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
             /// <summary>
             ///     Comparison method to compare which HighScore is greater
             /// </summary>
@@ -64,8 +84,8 @@ namespace SAE.YA3DT
             }
 
             /// <summary>
-            /// Parses a string, as outputed by <seealso cref="HighScore.SaveString"/> and sets its values.
-            /// Returns whether the operation was successful.
+            ///     Parses a string, as outputed by <seealso cref="SaveString"/> and sets its values.
+            ///     Returns whether the operation was successful.
             /// </summary>
             /// <param name="saveString">The string to parse from</param>
             /// <param name="user">The user who obtained the HighScore</param>
@@ -93,6 +113,28 @@ namespace SAE.YA3DT
                 score = 0;
                 user = string.Empty;
                 return false;
+            }
+
+            /// <summary>
+            ///     Checks whether two HighScores are equal
+            /// </summary>
+            /// <param name="left">The first operand</param>
+            /// <param name="right">The second operand</param>
+            /// <returns>Whether both operands are equal</returns>
+            public static bool operator ==(HighScore left, HighScore right)
+            {
+                return left.score == right.score && left.user == right.user;
+            }
+
+            /// <summary>
+            ///     Checks whether two HighScores aren't equal
+            /// </summary>
+            /// <param name="left">The first operand</param>
+            /// <param name="right">The second operand</param>
+            /// <returns>Whether both operands aren't equal</returns>
+            public static bool operator !=(HighScore left, HighScore right)
+            {
+                return left.score != right.score || left.user != right.user;
             }
         }
     }

@@ -41,6 +41,7 @@ namespace SAE.YA3DT.Menu
         /// </summary>
         public void GoToHighScoreScreen()
         {
+            HighScoreHandler.lastHighScorePosition = -1;
             SceneHelper.StartLoadScene("HighScores");
         }
 

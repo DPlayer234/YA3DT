@@ -27,7 +27,6 @@ namespace SAE.YA3DT.Menu
             }
             else
             {
-                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
                 SceneManager.SetActiveScene(scene);
             }
         }

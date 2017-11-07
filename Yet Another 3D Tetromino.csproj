@@ -229,11 +229,15 @@
     <Compile Include="Assets\Scripts\Menu\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Menu\PauseMenuHandler.cs" />
     <Compile Include="Assets\Scripts\Menu\SceneHelper.cs" />
+    <Compile Include="Assets\Scripts\Menu\TextLoader.cs" />
     <Compile Include="Assets\Scripts\Piece.cs" />
     <Compile Include="Assets\Scripts\PieceRotationHelper.cs" />
     <Compile Include="Assets\Scripts\PlayField.cs" />
+    <Compile Include="Assets\Scripts\SongSwapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Other\Credits Left.txt" />
+    <None Include="Assets\Other\Credits Right.txt" />
     <None Include="Assets\Other\Default High Scores.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

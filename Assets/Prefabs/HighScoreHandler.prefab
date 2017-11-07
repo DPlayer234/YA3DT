@@ -60,6 +60,7 @@ MonoBehaviour:
   - '#E86C00'
   - '#E8E537'
   - '#81ED5A'
+  newScoreDislayColor: '#FFFF99'
   defaultDisplayColor: '#72F0B1'
   displayedScoreCount: 20
   defaultScoreAsset: {fileID: 4900000, guid: 78a35dfe566317f43b20a6b283414a8b, type: 3}

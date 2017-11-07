@@ -51,6 +51,9 @@ namespace SAE.YA3DT
         /// <summary> The position of the next piece in relation to this. </summary>
         public Vector3 nextPieceLocalPosition;
 
+        /// <summary> The rotation of the next piece in relation to this. </summary>
+        public Quaternion nextPieceLocalRotation;
+
         /// <summary> How much the difficulty increases for every plane that is cleared </summary>
         public double difficultyIncrementOnPlaneClear = 0.25;
 
@@ -303,9 +306,10 @@ namespace SAE.YA3DT
             newPiece.MouseSensitivity = mouseSensitivity;
             newPiece.PlayField = PlayField;
             newPiece.GameStateHandler = this;
+
             newPiece.transform.parent = this.transform;
             newPiece.transform.localPosition = nextPieceLocalPosition;
-            newPiece.transform.localRotation = new Quaternion();
+            newPiece.transform.localRotation = nextPieceLocalRotation;
 
             return newPiece;
         }
@@ -329,12 +333,6 @@ namespace SAE.YA3DT
         {
             // Game Over Text Object falling from the sky...
             Instantiate(gameOverTextPrefab).transform.position = gameOverTextPosition;
-
-            AudioSource audioSource = GetComponent<AudioSource>();
-            if (audioSource != null)
-            {
-                audioSource.Stop();
-            }
         }
     }
 }

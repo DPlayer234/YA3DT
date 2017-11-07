@@ -1,1 +1,2 @@
-<color="#72F0B1">Music by </color>---
+<color="#72F0B1">Music by </color>Ozzed
+<color="#72F0B1">Album: </color>8-bit Run 'n Pun
