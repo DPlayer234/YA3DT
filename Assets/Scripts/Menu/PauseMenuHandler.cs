@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PauseMenuHandler.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT.Menu
 {
+    using UnityEngine;
+
     /// <summary>
     ///     Handles the pause menu
     /// </summary>
@@ -15,6 +16,7 @@ namespace SAE.YA3DT.Menu
         /// <summary> The active game state handler </summary>
         public GameStateHandler gameStateHandler;
 
+        /// <summary> The parent GameObject storing all menu items </summary>
         public GameObject menuItemParent;
 
         /// <summary>

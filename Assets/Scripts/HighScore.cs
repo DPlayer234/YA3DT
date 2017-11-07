@@ -1,8 +1,17 @@
-﻿using System.Text.RegularExpressions;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="HighScore.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
-    // Partial component to have HighScore be a part of HighScoreHandler
+    using System.Text.RegularExpressions;
+
+    // Partial class to have HighScore by a part of HighScorehandler
+    /// <summary>
+    ///     Stores and handles High Scores
+    /// </summary>
     public partial class HighScoreHandler
     {
         /// <summary>
@@ -21,7 +30,7 @@ namespace SAE.YA3DT
             public ulong score;
 
             /// <summary>
-            /// Assigns the values to the struct
+            ///     Initializes a new instance of the <see cref="HighScore"/> struct
             /// </summary>
             /// <param name="user">The user who obtained the HighScore</param>
             /// <param name="score">The HighScore's value</param>
@@ -48,7 +57,7 @@ namespace SAE.YA3DT
             /// <param name="a">The first HighScore</param>
             /// <param name="b">The second HighScore</param>
             /// <returns>0 if they are equal, -1 if a is greater and 1 if b is greater</returns>
-            static public int Compare(HighScore a, HighScore b)
+            public static int Compare(HighScore a, HighScore b)
             {
                 return a.score == b.score ? 0 :
                     (a.score > b.score ? -1 : 1);
@@ -62,7 +71,7 @@ namespace SAE.YA3DT
             /// <param name="user">The user who obtained the HighScore</param>
             /// <param name="score">The HighScore's value</param>
             /// <returns>Whether the operation was successful</returns>
-            static public bool TryParse(string saveString, out string user, out ulong score)
+            public static bool TryParse(string saveString, out string user, out ulong score)
             {
                 // Try to match the name and score
                 Match userMatch = Regex.Match(saveString, @"^.*\s");
@@ -75,7 +84,7 @@ namespace SAE.YA3DT
 
                     if (success)
                     {
-                        user = Regex.Replace(userMatch.Value, @"\s$", "");
+                        user = Regex.Replace(userMatch.Value, @"\s$", string.Empty);
                         return true;
                     }
                 }

@@ -1,24 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Piece.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
+    using UnityEngine;
+
     /// <summary>
     ///     Represents a game Piece
     /// </summary>
     public class Piece : MonoBehaviour
     {
-        /// <summary> Multiplier for movement and rotation speed. </summary>
-        private const float MOVEMENT_AND_ROTATION_SPEED_FACTOR = 4f;
-
-        /// <summary> Base for movement and rotation speed. </summary>
-        /// Must be in the range of 0-1! (0=instant; 1=no movement)
-        private const float MOVEMENT_AND_ROTATION_SPEED_BASE = 0.2f;
-
-        /// <summary> Volume multiplier for sounds played </summary>
-		private const float SOUND_VOLUME = 1.0f;
-
         /// <summary> Blocks coordinates </summary>
         public Vector3[] blockPositions;
 
@@ -36,6 +30,16 @@ namespace SAE.YA3DT
 
         /// <summary> Sound played when rotating </summary>
         public AudioClip rotateSound;
+
+        /// <summary> Multiplier for movement and rotation speed. </summary>
+        private const float MovementAndRotationSpeedFactor = 4f;
+
+        /// <summary> Base for movement and rotation speed. </summary>
+        /// Must be in the range of 0-1! (0=instant; 1=no movement)
+        private const float MovementAndRotationSpeedBase = 0.2f;
+
+        /// <summary> Volume multiplier for sounds played </summary>
+		private const float SoundVolume = 1.0f;
 
         /// <summary> Where the object is considered to be </summary>
         private Vector3 realPosition;
@@ -67,27 +71,36 @@ namespace SAE.YA3DT
         /// <summary> The active game state handler </summary>
         public GameStateHandler GameStateHandler { get; set; }
 
-        /// <summary> Amount of parts a piece has </summary>
-        private int PartCount { get; set; }
-
         /// <summary> Whether this piece is currently active </summary>
-        public bool Active {
+        public bool Active
+        {
             get
             {
                 return active;
             }
+
             set
             {
                 if (value)
                 {
                     UpdateTransformInstantly();
                 }
+
                 active = value;
             }
         }
 
+        /// <summary> Amount of parts a piece has </summary>
+        private int PartCount { get; set; }
+
         /// <summary> Multiplier for movement speed </summary>
-        private float MovementDelay { get { return (float)((Input.GetKey(KeyCode.Space) ? 0.1f : 1.0f) / GameStateHandler.Difficulty); } }
+        private float MovementDelay
+        {
+            get
+            {
+                return (float)((Input.GetKey(KeyCode.Space) ? 0.1f : 1.0f) / GameStateHandler.Difficulty);
+            }
+        }
 
         /// <summary>
         ///     Called by Unity to initialize the Piece
@@ -207,13 +220,29 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
+        ///     Checks whether the piece currenly overlaps any collision.
+        /// </summary>
+        /// <returns>Returns true if it overlaps anything, false otherwise</returns>
+        public bool CheckCurrentCollision()
+        {
+            Vector3[] positions = new Vector3[PartCount];
+
+            for (int i = 0; i < PartCount; i++)
+            {
+                positions[i] = realPosition + parts[i].transform.localPosition;
+            }
+
+            return CheckCollision(positions);
+        }
+
+        /// <summary>
         ///     Checks whether the given position overlaps any fixed block.
         /// </summary>
-        /// <param name="atPosition">The position to check</param>
+        /// <param name="position">The position to check</param>
         /// <returns>Whether it collides/overlaps anything</returns>
-        private bool CheckCollision(Vector3 atPosition)
+        private bool CheckCollision(Vector3 position)
         {
-            return PlayField.HasBlockAt(atPosition);
+            return PlayField.HasBlockAt(position);
         }
 
         /// <summary>
@@ -240,7 +269,7 @@ namespace SAE.YA3DT
         /// <param name="clip">The clip to play</param>
         private void PlaySound(AudioClip clip)
         {
-            AudioSource.PlayClipAtPoint(clip, transform.position, SOUND_VOLUME);
+            AudioSource.PlayClipAtPoint(clip, transform.position, SoundVolume);
         }
 
         /// <summary>
@@ -260,13 +289,12 @@ namespace SAE.YA3DT
             if (!CheckCollision(newPositions))
             {
                 PieceRotationHelper.RotateBlocks(parts, direction);
-                Vector3 rotateBy = -PieceRotationHelper.DirectionToVector[direction];
+                Vector3 rotateBy = -PieceRotationHelper.GetVectorByDirection(direction);
 
                 if (
                     (rotationOffset.x != 0 && rotateBy.x != 0) ||
                     (rotationOffset.y != 0 && rotateBy.y != 0) ||
-                    (rotationOffset.z != 0 && rotateBy.z != 0)
-                    )
+                    (rotationOffset.z != 0 && rotateBy.z != 0))
                 {
                     // Rotates in same direction
                     rotationOffset += rotateBy;
@@ -317,30 +345,14 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
-        ///     Checks whether the piece currenly overlaps any collision.
-        /// </summary>
-        /// <returns>Returns true if it overlaps anything, false otherwise</returns>
-        public bool CheckCurrentCollision()
-        {
-            Vector3[] positions = new Vector3[PartCount];
-
-            for (int i = 0; i < PartCount; i++)
-            {
-                positions[i] = realPosition + parts[i].transform.localPosition;
-            }
-
-            return CheckCollision(positions);
-        }
-
-        /// <summary>
         ///     Updates the transform's position and rotation smoothly.
         /// </summary>
         private void UpdateTransform()
         {
-            float transformSpeed = (MOVEMENT_AND_ROTATION_SPEED_FACTOR / MovementDelay) * Time.deltaTime;
+            float transformSpeed = (MovementAndRotationSpeedFactor / MovementDelay) * Time.deltaTime;
 
-            transform.position = realPosition - (realPosition - transform.position) * Mathf.Pow(MOVEMENT_AND_ROTATION_SPEED_BASE, transformSpeed);
-            rotationOffset *= Mathf.Pow(MOVEMENT_AND_ROTATION_SPEED_BASE, transformSpeed);
+            transform.position = realPosition - (realPosition - transform.position) * Mathf.Pow(MovementAndRotationSpeedBase, transformSpeed);
+            rotationOffset *= Mathf.Pow(MovementAndRotationSpeedBase, transformSpeed);
 
             transform.rotation = new Quaternion()
             {

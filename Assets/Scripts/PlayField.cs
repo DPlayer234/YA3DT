@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PlayField.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     /// <summary>
     ///     A play field with fixed blocks
     /// </summary>
@@ -212,6 +217,7 @@ namespace SAE.YA3DT
                 if (filled)
                 {
                     planesCleared++;
+
                     // If it is, move all planes above it one down, deleting this plane as a result
                     for (int yr = y + 1; yr < height; yr++)
                     {
@@ -252,30 +258,6 @@ namespace SAE.YA3DT
             {
                 GameStateHandler.Score += (ulong)(planesCleared * planesCleared * GameStateHandler.scoreOnPlaneClearFactor * GameStateHandler.Difficulty);
                 GameStateHandler.Difficulty += planesCleared * GameStateHandler.difficultyIncrementOnPlaneClear;
-            }
-        }
-
-        /// <summary>
-        ///     To be called when the game is over.
-        ///     Causes all blocks to go flying wherever.
-        /// </summary>
-        private void OnGameOver()
-        {
-            Block block;
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    for (int z = 0; z < depth; z++)
-                    {
-                        block = blocks[x, y, z];
-                        if (block != null)
-                        {
-                            block.BreakMe();
-                            blocks[x, y, z] = null;
-                        }
-                    }
-                }
             }
         }
 
@@ -322,10 +304,13 @@ namespace SAE.YA3DT
         ///     Returns whether the coordinate is in bounds.
         /// A coordinate is in bounds if it is within the walls and higher than the origin.
         /// </summary>
+        /// <param name="x">The X Coordinate</param>
+        /// <param name="y">The Y Coordinate</param>
+        /// <param name="y">The Z Coordinate</param>
         /// <returns>Whether the coordinate is within bounds</returns>
         private bool IsInBounds(int x, int y, int z)
         {
-            return (x >= 0 && x < width && z >= 0 && z < depth && y >= 0);
+            return x >= 0 && x < width && z >= 0 && z < depth && y >= 0;
         }
 
         /// <summary>
@@ -333,10 +318,37 @@ namespace SAE.YA3DT
         ///     A coordinate is within the play area if it is less than <seealso cref="width"/>, <seealso cref="height"/>, and <seealso cref="depth"/>
         ///     but greater than or equal to 0.
         /// </summary>
+        /// <param name="x">The X Coordinate</param>
+        /// <param name="y">The Y Coordinate</param>
+        /// <param name="y">The Z Coordinate</param>
         /// <returns>Whether the coordinate is within the play area</returns>
         private bool IsInPlayArea(int x, int y, int z)
         {
-            return (IsInBounds(x, y, z) && y < height);
+            return IsInBounds(x, y, z) && y < height;
+        }
+
+        /// <summary>
+        ///     To be called when the game is over.
+        ///     Causes all blocks to go flying wherever.
+        /// </summary>
+        private void OnGameOver()
+        {
+            Block block;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int z = 0; z < depth; z++)
+                    {
+                        block = blocks[x, y, z];
+                        if (block != null)
+                        {
+                            block.BreakMe();
+                            blocks[x, y, z] = null;
+                        }
+                    }
+                }
+            }
         }
     }
 }

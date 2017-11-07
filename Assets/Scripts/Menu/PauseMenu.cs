@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PauseMenu.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT.Menu
 {
+    using UnityEngine;
+
     /// <summary>
     ///     Stores the functions for the buttons in the pause menu
     /// </summary>

@@ -1,13 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="HighScoreHandler.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text.RegularExpressions;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     ///     Stores and handles High Scores
     /// </summary>
@@ -97,27 +102,6 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
-        ///     Creates the save directory.
-        /// </summary>
-        /// <returns>true if successful, false if it failed or it already exists.</returns>
-        private bool CreateSaveDirectory()
-        {
-            if (!Directory.Exists(highScoreSaveDirectoryFullPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(highScoreSaveDirectoryFullPath);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
         ///     Loads all HighScores from file into memory
         /// </summary>
         public void LoadHighScores()
@@ -174,7 +158,9 @@ namespace SAE.YA3DT
         {
             if (defaultScoreAsset != null)
             {
-                foreach (Match match in Regex.Matches(defaultScoreAsset.text, @".*"))
+                // Carriage returns cause issues... Additional LFs won't hurt however.
+                string text = defaultScoreAsset.text.Replace('\r', '\n');
+                foreach (Match match in Regex.Matches(text, @".*"))
                 {
                     string user;
                     ulong score;
@@ -261,6 +247,28 @@ namespace SAE.YA3DT
             {
                 HighScores.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        ///     Creates the save directory.
+        /// </summary>
+        /// <returns>true if successful, false if it failed or it already exists.</returns>
+        private bool CreateSaveDirectory()
+        {
+            if (!Directory.Exists(highScoreSaveDirectoryFullPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(highScoreSaveDirectoryFullPath);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

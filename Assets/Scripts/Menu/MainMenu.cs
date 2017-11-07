@@ -1,9 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="MainMenu.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT.Menu
 {
+    using UnityEngine;
+
     /// <summary>
     ///     Stores the functions for the buttons in the main menu
     /// </summary>
@@ -41,14 +45,6 @@ namespace SAE.YA3DT.Menu
         }
 
         /// <summary>
-        ///     Goes to the Credits Screen
-        /// </summary>
-        public void GoToCreditsScreen()
-        {
-            SceneHelper.StartLoadScene("Credits");
-        }
-
-        /// <summary>
         ///     Goes back to the menu
         /// </summary>
         public void GoToMenu()
@@ -62,6 +58,14 @@ namespace SAE.YA3DT.Menu
         public void SelectDifficulty()
         {
             menuHandler.ChangeState(MainMenuHandler.MenuState.DifficultySelection);
+        }
+
+        /// <summary>
+        ///     Changes the menu state to the credits screen
+        /// </summary>
+        public void ShowCredits()
+        {
+            menuHandler.ChangeState(MainMenuHandler.MenuState.Credits);
         }
 
         /// <summary>

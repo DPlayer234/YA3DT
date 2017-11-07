@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
-
+//-----------------------------------------------------------------------
+// <copyright file="GameStateHandler.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     ///     An Event to be called on a Game Over
     /// </summary>
@@ -16,9 +21,6 @@ namespace SAE.YA3DT
     /// </summary>
     public class GameStateHandler : MonoBehaviour
     {
-        /// <summary> The starting difficulty </summary>
-        static public double initialDifficulty = 3.0;
-
         /// <summary> The current pause menu handler </summary>
         public Menu.PauseMenuHandler menuHandler;
 
@@ -64,6 +66,9 @@ namespace SAE.YA3DT
         /// <summary> Affects how much the mouse must be moved to move a piece </summary>
         public float mouseSensitivity = 1.5f;
 
+        /// <summary> The starting difficulty </summary>
+        private static double initialDifficulty = 3.0;
+
         /// <summary> RNG for picking the pieces </summary>
         private System.Random random;
 
@@ -75,6 +80,15 @@ namespace SAE.YA3DT
 
         /// <summary> Whether the game is currently paused; use the property <see cref="Paused"/> for access </summary>
         private bool paused;
+
+        /// <summary>
+        ///     The starting difficulty
+        /// </summary>
+        public static double InitialDifficulty
+        {
+            get { return initialDifficulty; }
+            set { initialDifficulty = value; }
+        }
 
         /// <summary> The currently active and controlled piece </summary>
         public Piece ActivePiece { get; private set; }
@@ -99,13 +113,18 @@ namespace SAE.YA3DT
         /// </summary>
         public ulong Score
         {
-            get { return score; }
+            get
+            {
+                return score;
+            }
+
             set
             {
                 if (!GameOver)
                 {
                     scoreDisplay.text = scoreDisplayText + value.ToString("D9");
                 }
+
                 score = value;
             }
         }
@@ -114,14 +133,27 @@ namespace SAE.YA3DT
         ///     The current game difficulty.
         ///     Affects things like the speed at which the active piece falls and how much score is awarded.
         ///     Setting it also updates the attached difficulty display.
+        ///     It cannot be set lower than the initial difficulty.
         /// </summary>
         public double Difficulty
         {
-            get { return difficulty; }
+            get
+            {
+                return difficulty;
+            }
+
             set
             {
-                difficultyDisplay.text = difficultyDisplayText + value.ToString("F2");
-                difficulty = value;
+                if (value < InitialDifficulty)
+                {
+                    difficulty = InitialDifficulty;
+                }
+                else
+                {
+                    difficulty = value;
+                }
+
+                difficultyDisplay.text = difficultyDisplayText + difficulty.ToString("F2");
             }
         }
 
@@ -135,6 +167,7 @@ namespace SAE.YA3DT
             {
                 return paused;
             }
+
             set
             {
                 if (value)
@@ -145,6 +178,7 @@ namespace SAE.YA3DT
                 {
                     Time.timeScale = 1f;
                 }
+
                 paused = value;
             }
         }
@@ -154,15 +188,27 @@ namespace SAE.YA3DT
         /// </summary>
         private void Start()
         {
+            // Make sure the starting difficulty is valid
+            try
+            {
+                if (InitialDifficulty <= 0) throw new Exception("GameStateHandler.initialDifficulty must be greater than 0!");
+            }
+            catch (Exception exception)
+            {
+                print(exception);
+                InitialDifficulty = 1;
+            }
+
+            // Proper setup
             random = new System.Random();
 
             GameOver = false;
             Score = 0;
-            
+
             GameOverEvents = new List<GameOverEvent>();
             GameOverEvents.Add(OnGameOver);
 
-            Difficulty = initialDifficulty;
+            Difficulty = InitialDifficulty;
 
             PlayField = Instantiate(playFieldPrefab);
             PlayField.GameStateHandler = this;
@@ -201,6 +247,49 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
+        ///     Progresses to the next piece.
+        /// </summary>
+        public void GoToNextPiece()
+        {
+            PlayField.CheckForAndClearFilledPlanes();
+
+            if (ActivePiece != null)
+            {
+                Destroy(ActivePiece.gameObject);
+            }
+
+            ActivePiece = NextPiece;
+            ActivatePiece(ActivePiece);
+
+            if (ActivePiece.CheckCurrentCollision())
+            {
+                // Piece already overlaps something upon spawning
+                SetGameOver();
+
+                ActivePiece.Active = false;
+                NextPiece = null;
+            }
+            else
+            {
+                // Progress normally
+                NextPiece = SetupNewPiece();
+            }
+        }
+
+        /// <summary>
+        ///     Sets and initializes the game over state.
+        /// </summary>
+        public void SetGameOver()
+        {
+            GameOver = true;
+
+            foreach (GameOverEvent gameOverEvent in GameOverEvents)
+            {
+                gameOverEvent();
+            }
+        }
+
+        /// <summary>
         ///     Creates a new piece and sets its relevant variables.
         ///     It starts out inactive.
         /// </summary>
@@ -233,49 +322,6 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
-        ///     Progresses to the next piece.
-        /// </summary>
-        public void GoToNextPiece()
-        {
-            PlayField.CheckForAndClearFilledPlanes();
-            
-            if (ActivePiece != null)
-            {
-                Destroy(ActivePiece.gameObject);
-            }
-
-            ActivePiece = NextPiece;
-            ActivatePiece(ActivePiece);
-
-            if (ActivePiece.CheckCurrentCollision())
-            {
-                // Piece already overlaps something upon spawning
-                SetGameOver();
-                
-                ActivePiece.Active = false;
-                NextPiece = null;
-            }
-            else
-            {
-                // Progress normally
-                NextPiece = SetupNewPiece();
-            }
-        }
-
-        /// <summary>
-        ///     Sets and initializes the game over state.
-        /// </summary>
-        public void SetGameOver()
-        {
-            GameOver = true;
-
-            foreach (GameOverEvent gameOverEvent in GameOverEvents)
-            {
-                gameOverEvent();
-            }
-        }
-
-        /// <summary>
         ///     To be called on a game over.
         ///     Sets misc. things, like the display and unhides the exit button.
         /// </summary>
@@ -283,6 +329,12 @@ namespace SAE.YA3DT
         {
             // Game Over Text Object falling from the sky...
             Instantiate(gameOverTextPrefab).transform.position = gameOverTextPosition;
+
+            AudioSource audioSource = GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.Stop();
+            }
         }
     }
 }

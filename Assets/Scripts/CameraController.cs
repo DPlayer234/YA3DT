@@ -1,36 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="CameraController.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT
 {
+    using UnityEngine;
+
     /// <summary>
     ///     Controls the camera
     /// </summary>
     public class CameraController : MonoBehaviour
     {
-        /// <summary> The H value for the background color on high difficulties </summary>
-        private const float BACKGROUND_COLOR_HIGH_DIFFICULTY_H = 0.0f;
-
-        /// <summary> The H value for the background color on low difficulties </summary>
-        private const float BACKGROUND_COLOR_LOW_DIFFICULTY_H = 0.6f;
-
-        /// <summary> [0..1] Lower values make the background color fade to the high-difficulty H value faster. </summary>
-        private const float BACKGROUND_COLOR_DIFFICULTY_FADE_RELATION = 0.4f;
-
-        /// <summary> The S value for the background color </summary>
-        private const float BACKGROUND_COLOR_S = 0.6f;
-
-        /// <summary> The V value for the background color </summary>
-        private const float BACKGROUND_COLOR_V = 0.6f;
-
         /// <summary> The active game state handler </summary>
         public GameStateHandler gameStateHandler;
 
+        /// <summary> The H value for the background color on high difficulties </summary>
+        private const float BackgroundColorHighDifficultyHue = 0.0f;
+
+        /// <summary> The H value for the background color on low difficulties </summary>
+        private const float BackgroundColorLowDifficultyHue = 0.6f;
+
+        /// <summary> [0..1] Lower values make the background color fade to the high-difficulty H value faster. </summary>
+        private const float BackgroundColorDifficultyFadeRelation = 0.4f;
+
+        /// <summary> The S value for the background color </summary>
+        private const float BackgroundColorSaturation = 0.6f;
+
+        /// <summary> The V value for the background color </summary>
+        private const float BackgroundColorValue = 0.6f;
+
         /// <summary> The camera object attached to this GameObject </summary>
-        new private Camera camera;
+        private new Camera camera;
 
         /// <summary> The difficulty last frame; used to make sure not to change the background color every frame </summary>
         private double lastDifficulty;
@@ -38,7 +40,7 @@ namespace SAE.YA3DT
         /// <summary>
         ///     Called by Unity to initialize the CameraController
         /// </summary>
-        void Start()
+        private void Start()
         {
             Cursor.lockState = CursorLockMode.None;
 
@@ -48,28 +50,9 @@ namespace SAE.YA3DT
         }
 
         /// <summary>
-        ///     Sets the background color based on the current difficulty.
-        /// </summary>
-        private void SetBackgroundColorBasedOnDifficulty()
-        {
-            if (lastDifficulty != gameStateHandler.Difficulty)
-            {
-                lastDifficulty = gameStateHandler.Difficulty;
-
-                float h = BACKGROUND_COLOR_HIGH_DIFFICULTY_H -
-                    (BACKGROUND_COLOR_HIGH_DIFFICULTY_H - BACKGROUND_COLOR_LOW_DIFFICULTY_H) *
-                    Mathf.Pow(
-                        BACKGROUND_COLOR_DIFFICULTY_FADE_RELATION,
-                        (float)(gameStateHandler.Difficulty - GameStateHandler.initialDifficulty));
-
-                camera.backgroundColor = Color.HSVToRGB(h, BACKGROUND_COLOR_S, BACKGROUND_COLOR_V);
-            }
-        }
-
-        /// <summary>
         ///     Called by Unity every frame to update the CameraController
         /// </summary>
-        void Update()
+        private void Update()
         {
             SetBackgroundColorBasedOnDifficulty();
 
@@ -109,6 +92,25 @@ namespace SAE.YA3DT
                     rotation.eulerAngles = eulerAngles;
                     transform.parent.rotation = rotation;
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the background color based on the current difficulty.
+        /// </summary>
+        private void SetBackgroundColorBasedOnDifficulty()
+        {
+            if (lastDifficulty != gameStateHandler.Difficulty)
+            {
+                lastDifficulty = gameStateHandler.Difficulty;
+
+                float h = BackgroundColorHighDifficultyHue -
+                    (BackgroundColorHighDifficultyHue - BackgroundColorLowDifficultyHue) *
+                    Mathf.Pow(
+                        BackgroundColorDifficultyFadeRelation,
+                        (float)(gameStateHandler.Difficulty - GameStateHandler.InitialDifficulty));
+
+                camera.backgroundColor = Color.HSVToRGB(h, BackgroundColorSaturation, BackgroundColorValue);
             }
         }
     }

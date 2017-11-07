@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine.SceneManagement;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="SceneHelper.cs" company="SAE">
+//     Copyright (c) Darius Kinstler, SAE. All rights reserved.
+// </copyright>
+// <author>Darius Kinstler</author>
+//-----------------------------------------------------------------------
 namespace SAE.YA3DT.Menu
 {
+    using UnityEngine.SceneManagement;
+
     /// <summary>
     ///     Supplies functions that help handling scenes
     /// </summary>
@@ -15,7 +17,7 @@ namespace SAE.YA3DT.Menu
         ///     Loads a scene
         /// </summary>
         /// <param name="sceneName">The name of the scene to load</param>
-        static public void StartLoadScene(string sceneName)
+        public static void StartLoadScene(string sceneName)
         {
             Scene scene = SceneManager.GetSceneByName(sceneName);
 
